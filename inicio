@@ -1,0 +1,32 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.fft import fft, fftfreq
+
+df = pd.read_csv('canhao.csv', delimiter=";")
+df.head()
+df['data'] = pd.to_datetime(df['data'], format='%d/%m/%Y %H:%M:%S')
+plt.figure('Grafico Vibracao LA ponto a ponto')
+plt.plot(df['data'],df['viLA'])
+plt.show(block=False)
+# print(df['data'])
+
+#fourrier
+# n = numero de pontos do grafico
+N = len(df['data'])
+fs = 10
+T = 1/fs
+tp = np.arange(0, N/fs, T)
+
+plt.figure('Grafico Vibracao LA Dominio do tempo')
+plt.plot(tp,df['viLA']) # dominio do tempo
+plt.show(block=False)
+
+# #Iniciando em funcao de frequencia
+f = np.fft.fftfreq(N, T)
+transfer = np.fft.fft(df['viLA']) #transformada
+transfer = np.abs(transfer) #modulos
+
+plt.figure('Grafico Vibracao LA Dominio da vibração')
+plt.plot(f[f>0],transfer[f>0])
+plt.show()
